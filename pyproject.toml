@@ -2,7 +2,7 @@
 name = "struqture_qutip_interface"
 version = "0.1.0"
 description = ""
-license = "Apache-2.0"
+license = {text="Apache-2.0"}
 authors = [{name="HQS Quantum Simulation GmbH", email="info@quantumsimulations.de"}]
 readme = "README.md"
 dependencies = [
@@ -19,16 +19,6 @@ tests = [
 [tool.distutils.bdist_wheel]
 universal = true
 
-dev = [
-    'flake8',
-    'flake8-bugbear',
-    'flake8-pyproject',
-    'flake8-pydocstyle',
-    'darglint',
-    'bandit',
-    'mypy',
-    'black'
-]
 
 [build-system]
 requires = ["setuptools", "setuptools-scm"]

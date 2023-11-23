@@ -1,6 +1,6 @@
 [project]
 name = "struqture_qutip_interface"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 license = {text="Apache-2.0"}
 authors = [{name="HQS Quantum Simulation GmbH", email="info@quantumsimulations.de"}]

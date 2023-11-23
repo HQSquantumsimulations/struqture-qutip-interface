@@ -225,7 +225,7 @@ class SpinOpenSystemQutipInterface(object):
             number_qubits = max(system.number_spins(), noise.number_spins())
         except AttributeError:
             number_qubits = open_system.number_spins()
-            system = dict()
+            system = {}
             noise = open_system
 
         coherent_part = 0

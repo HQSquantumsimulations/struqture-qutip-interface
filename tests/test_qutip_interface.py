@@ -104,18 +104,12 @@ def test_qobj_endianess(endianess):
     to_matrix = {0: qt.qeye(2), 1: qt.sigmax(), 2: qt.sigmay(), 3: qt.sigmaz()}
     if endianess == "little":
         exact = np.sum(
-            [
-                (i + 1) * np.kron(np.eye(2), to_matrix[i].data.toarray())
-                for i in [0, 1, 2, 3]
-            ],
+            [(i + 1) * np.kron(np.eye(2), to_matrix[i].data.toarray()) for i in [0, 1, 2, 3]],
             0,
         )
     else:
         exact = np.sum(
-            [
-                (i + 1) * np.kron(to_matrix[i].data.toarray(), np.eye(2))
-                for i in [0, 1, 2, 3]
-            ],
+            [(i + 1) * np.kron(to_matrix[i].data.toarray(), np.eye(2)) for i in [0, 1, 2, 3]],
             0,
         )
     sps = SpinHamiltonianSystem(2)
@@ -171,9 +165,7 @@ def test_open_system_interface_open_system(endianess):
 
     qt_coherent = -1j * (qt.spre(qt_coherent_pre) - qt.spost(qt_coherent_pre))
     qt_noisy = complex(3) * (
-        qt.sprepost(An, Am.dag())
-        - 0.5 * qt.spre(Am.dag() * An)
-        - 0.5 * qt.spost(Am.dag() * An)
+        qt.sprepost(An, Am.dag()) - 0.5 * qt.spre(Am.dag() * An) - 0.5 * qt.spost(Am.dag() * An)
     )
 
     assert qt_system_3[1] == 0
@@ -206,9 +198,7 @@ def test_open_system_interface_noise_operator(endianess):
         )
 
     qt_noisy = complex(3) * (
-        qt.sprepost(An, Am.dag())
-        - 0.5 * qt.spre(Am.dag() * An)
-        - 0.5 * qt.spost(Am.dag() * An)
+        qt.sprepost(An, Am.dag()) - 0.5 * qt.spre(Am.dag() * An) - 0.5 * qt.spost(Am.dag() * An)
     )
 
     assert qt_system_5 == (0, 0)

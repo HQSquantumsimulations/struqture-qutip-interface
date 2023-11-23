@@ -214,9 +214,7 @@ class SpinOpenSystemQutipInterface(object):
             elif coherent == 0:
                 hamiltonian = 0
             else:
-                raise TypeError(
-                    "Coherent part of the Hamiltonian cannot be converted to QuTiP"
-                )
+                raise TypeError("Coherent part of the Hamiltonian cannot be converted to QuTiP")
             return hamiltonian
 
         try:
@@ -232,9 +230,7 @@ class SpinOpenSystemQutipInterface(object):
         noisy_part = 0
 
         for pp in system.keys():
-            pp_qt = SpinQutipInterface.pauli_product_to_qutip(
-                pp, number_qubits, endianess
-            )
+            pp_qt = SpinQutipInterface.pauli_product_to_qutip(pp, number_qubits, endianess)
             key_qt = system.get(key=pp)
             coherent_part += complex(key_qt) * pp_qt
         coherent_part = coherent_hamiltonian(coherent_part)

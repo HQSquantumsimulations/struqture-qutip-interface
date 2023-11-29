@@ -12,4 +12,5 @@
 """Qutip interface for struqture_py.spins ."""
 from struqture_qutip_interface.qutip_interface import SpinQutipInterface
 from struqture_qutip_interface.qutip_interface import SpinOpenSystemQutipInterface
+
 __license__ = "Apache-2.0"

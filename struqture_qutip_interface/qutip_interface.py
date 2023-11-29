@@ -40,7 +40,7 @@ def _pauli_str_to_matrix(pauli_str: str) -> qt.Qobj:
     elif pauli_str == "Z":
         return qt.sigmaz()
     else:
-        raise ValueError('pauli_str definition must be int in [I, X, Y, Z]')
+        raise ValueError("pauli_str definition must be int in [I, X, Y, Z]")
 
 
 def _decoherence_str_to_matrix(decoh_str: str) -> qt.Qobj:
@@ -67,7 +67,7 @@ def _decoherence_str_to_matrix(decoh_str: str) -> qt.Qobj:
     elif decoh_str == "Z":
         return qt.sigmaz()
     else:
-        raise ValueError('decoh_str definition must be int in [I, X, iY, Z]')
+        raise ValueError("decoh_str definition must be int in [I, X, iY, Z]")
 
 
 class SpinQutipInterface(object):
@@ -75,9 +75,7 @@ class SpinQutipInterface(object):
 
     @staticmethod
     def pauli_product_to_qutip(
-        product: str,
-        number_spins: int,
-        endianess: str = 'little'
+        product: str, number_spins: int, endianess: str = "little"
     ) -> qt.Qobj:
         r"""Returns QuTiP representation of a PauliProduct.
 
@@ -89,27 +87,25 @@ class SpinQutipInterface(object):
         Returns:
             Qobj: The QuTiP representation
         """
+
         def to_index(index: int) -> int:
-            if endianess == 'little':
+            if endianess == "little":
                 return number_spins - 1 - index
-            elif endianess == 'big':
+            elif endianess == "big":
                 return index
             else:
-                raise ValueError("endianess either little or big")
+                raise ValueError("endianess needs to be either little or big")
+
         ops = [qt.qeye(2)] * number_spins
         pp = spins.PauliProduct.from_string(str(product))
         for index in pp.keys():
             if index < number_spins:
-                ops[to_index(index)] = _pauli_str_to_matrix(
-                    pp.get(index)
-                )
+                ops[to_index(index)] = _pauli_str_to_matrix(pp.get(index))
         return qt.tensor(ops)
 
     @staticmethod
     def decoherence_product_to_qutip(
-        product: str,
-        number_spins: int,
-        endianess: str = 'little'
+        product: str, number_spins: int, endianess: str = "little"
     ) -> qt.Qobj:
         r"""Returns QuTiP representation of a PauliProduct.
 
@@ -121,27 +117,24 @@ class SpinQutipInterface(object):
         Returns:
             Qobj: The QuTiP representation
         """
+
         def to_index(index: int) -> int:
-            if endianess == 'little':
+            if endianess == "little":
                 return number_spins - 1 - index
-            elif endianess == 'big':
+            elif endianess == "big":
                 return index
             else:
-                raise ValueError("endianess either little or big")
+                raise ValueError("endianess needs to be either little or big")
+
         ops = [qt.qeye(2)] * number_spins
         dp = spins.DecoherenceProduct.from_string(str(product))
         for index in dp.keys():
             if index < number_spins:
-                ops[to_index(index)] = _decoherence_str_to_matrix(
-                    dp.get(index)
-                )
+                ops[to_index(index)] = _decoherence_str_to_matrix(dp.get(index))
         return qt.tensor(ops)
 
     @staticmethod
-    def qobj(
-        system: spins.SpinHamiltonianSystem,
-        endianess: str = "little"
-    ) -> qt.Qobj:
+    def qobj(system: spins.SpinHamiltonianSystem, endianess: str = "little") -> qt.Qobj:
         r"""Returns a QuTiP representation.
 
         Args:
@@ -170,7 +163,7 @@ class SpinOpenSystemQutipInterface(object):
     @staticmethod
     def open_system_to_qutip(
         open_system: Union[spins.SpinLindbladOpenSystem, spins.SpinLindbladNoiseSystem],
-        endianess: str = 'little'
+        endianess: str = "little",
     ) -> qt.Qobj:
         r"""Returns QuTiP representation of an SpinLindbladOpenSystem.
 
@@ -186,6 +179,7 @@ class SpinOpenSystemQutipInterface(object):
         Returns:
             Qobj: The QuTiP representation
         """
+
         def lind_dis(An: qt.Qobj, Am: qt.Qobj) -> qt.Qobj:
             """Creates the Lindblad dissipator term from two operators.
 
@@ -197,8 +191,11 @@ class SpinOpenSystemQutipInterface(object):
                 qt.Qobj
             """
             # uses column major
-            return qt.sprepost(An, Am.dag()) - 0.5 * qt.spre(Am.dag() * An) - \
-                0.5 * qt.spost(Am.dag() * An)
+            return (
+                qt.sprepost(An, Am.dag())
+                - 0.5 * qt.spre(Am.dag() * An)
+                - 0.5 * qt.spost(Am.dag() * An)
+            )
 
         def coherent_hamiltonian(coherent: qt.Qobj) -> qt.Qobj:
             """Creates the coherent part of the Lindblad equation from the given Hamiltonian.
@@ -217,7 +214,7 @@ class SpinOpenSystemQutipInterface(object):
             elif coherent == 0:
                 hamiltonian = 0
             else:
-                raise TypeError('Coherent part of the Hamiltonian cannot be converted to QuTiP')
+                raise TypeError("Coherent part of the Hamiltonian cannot be converted to QuTiP")
             return hamiltonian
 
         try:
@@ -226,7 +223,7 @@ class SpinOpenSystemQutipInterface(object):
             number_qubits = max(system.number_spins(), noise.number_spins())
         except AttributeError:
             number_qubits = open_system.number_spins()
-            system = dict()
+            system = {}
             noise = open_system
 
         coherent_part = 0
@@ -238,11 +235,13 @@ class SpinOpenSystemQutipInterface(object):
             coherent_part += complex(key_qt) * pp_qt
         coherent_part = coherent_hamiltonian(coherent_part)
 
-        for (A_n, A_m) in noise.keys():
+        for A_n, A_m in noise.keys():
             spin_op_1 = SpinQutipInterface.decoherence_product_to_qutip(
-                A_n, number_qubits, endianess)
+                A_n, number_qubits, endianess
+            )
             spin_op_2 = SpinQutipInterface.decoherence_product_to_qutip(
-                A_m, number_qubits, endianess)
+                A_m, number_qubits, endianess
+            )
             try:
                 h_nm_value = noise.get(key=(str(A_n), str(A_m)))
             except AttributeError:

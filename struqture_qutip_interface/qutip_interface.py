@@ -145,9 +145,8 @@ class SpinQutipInterface(object):
             qt.Qobj: The QuTiP representation
 
         """
-        number_spins: int
-        number_spins = system.number_spins()
-        spin_operator = 0
+        number_spins: int = system.number_spins()
+        spin_operator: qt.Qobj = qt.Qobj()
         coeff: complex
         for key in system.keys():
             coeff = complex(system.get(key))
@@ -168,9 +167,8 @@ class SpinQutipInterface(object):
             qt.Qobj: The QuTiP representation
 
         """
-        number_spins: int
-        number_spins = spin_op.number_spins()
-        spin_operator = 0
+        number_spins : int = spin_op.number_spins()
+        spin_operator: qt.Qobj = qt.Qobj()
         coeff: complex
         for key in spin_op.keys():
             coeff = complex(spin_op.get(key))

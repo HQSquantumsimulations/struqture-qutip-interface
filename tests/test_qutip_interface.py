@@ -114,6 +114,15 @@ def test_qobj2():
         sps.set(repr(pp), CalculatorComplex(i + 1))
     assert qi.qobj(sps) == qt.Qobj(exact, dims=[[2, 2], [2, 2]])
 
+def test_qobj_empty():
+    qi = SpinQutipInterface()
+    sps = SpinHamiltonianSystem()
+    assert qi.qobj(sps) == qt.Qobj()
+
+def test_qobj2_empty():
+    qi = SpinQutipInterface()
+    sps = SpinSystem()
+    assert qi.qobj(sps) == qt.Qobj()
 
 @pytest.mark.parametrize("endianess", ["little", "big"])
 def test_qobj_endianess(endianess):

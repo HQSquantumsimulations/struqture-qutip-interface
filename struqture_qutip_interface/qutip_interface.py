@@ -147,9 +147,8 @@ class SpinQutipInterface(object):
         """
         number_spins: int = system.number_spins()
         spin_operator: qt.Qobj = qt.Qobj()
-        coeff: complex
         for key in system.keys():
-            coeff = complex(system.get(key))
+            coeff: complex = complex(system.get(key))
             spin_operator += coeff * SpinQutipInterface.pauli_product_to_qutip(
                 key, number_spins, endianess=endianess
             )
@@ -169,9 +168,8 @@ class SpinQutipInterface(object):
         """
         number_spins : int = spin_op.number_spins()
         spin_operator: qt.Qobj = qt.Qobj()
-        coeff: complex
         for key in spin_op.keys():
-            coeff = complex(spin_op.get(key))
+            coeff: complex = complex(spin_op.get(key))
             spin_operator += coeff * SpinQutipInterface.pauli_product_to_qutip(
                 key, number_spins, endianess=endianess
             )

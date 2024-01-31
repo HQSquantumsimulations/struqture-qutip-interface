@@ -135,7 +135,7 @@ class SpinQutipInterface(object):
 
     @staticmethod
     def qobj(system: spins.SpinHamiltonianSystem, endianess: str = "little") -> qt.Qobj:
-        r"""Returns a QuTiP representation.
+        r"""Returns a QuTiP representation of a SpinHamiltonianSystem.
 
         Args:
             system: The spin system
@@ -157,7 +157,7 @@ class SpinQutipInterface(object):
 
     @staticmethod
     def qobj(spin_op: spins.SpinSystem, endianess: str = "little") -> qt.Qobj:
-        r"""Returns a QuTiP representation.
+        r"""Returns a QuTiP representation of a SpinSystem.
 
         Args:
             spin_op: The spin system

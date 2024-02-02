@@ -13,7 +13,7 @@
 """Qutip interface to spins."""
 import qutip as qt
 from struqture_py import spins
-from typing import Union
+from typing import Union, overload
 
 
 def _pauli_str_to_matrix(pauli_str: str) -> qt.Qobj:
@@ -72,7 +72,6 @@ def _decoherence_str_to_matrix(decoh_str: str) -> qt.Qobj:
 
 class SpinQutipInterface(object):
     """QuTiP interface for SpinHamiltonianSystem objects."""
-
     @staticmethod
     def pauli_product_to_qutip(
         product: str, number_spins: int, endianess: str = "little"
@@ -133,6 +132,7 @@ class SpinQutipInterface(object):
                 ops[to_index(index)] = _decoherence_str_to_matrix(dp.get(index))
         return qt.tensor(ops)
 
+    @overload
     @staticmethod
     def qobj(system: spins.SpinHamiltonianSystem, endianess: str = "little") -> qt.Qobj:
         r"""Returns a QuTiP representation of a SpinHamiltonianSystem.

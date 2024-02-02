@@ -135,16 +135,6 @@ class SpinQutipInterface(object):
     @overload
     @staticmethod
     def qobj(system: spins.SpinHamiltonianSystem, endianess: str = "little") -> qt.Qobj:
-        r"""Returns a QuTiP representation of a SpinHamiltonianSystem.
-
-        Args:
-            system: The spin system
-            endianess: first qubit to the right (little) or left (big)
-
-        Returns:
-            qt.Qobj: The QuTiP representation
-
-        """
         number_spins: int = system.number_spins()
         spin_operator: qt.Qobj = qt.Qobj()
         for key in system.keys():
@@ -155,21 +145,21 @@ class SpinQutipInterface(object):
         return spin_operator
 
     @staticmethod
-    def qobj(spin_op: spins.SpinSystem, endianess: str = "little") -> qt.Qobj:
-        r"""Returns a QuTiP representation of a SpinSystem.
+    def qobj(system: spins.SpinSystem, endianess: str = "little") -> qt.Qobj:
+        r"""Returns a QuTiP representation .
 
         Args:
-            spin_op: The spin system
+            system: The spin based system
             endianess: first qubit to the right (little) or left (big)
 
         Returns:
             qt.Qobj: The QuTiP representation
 
         """
-        number_spins : int = spin_op.number_spins()
+        number_spins : int = system.number_spins()
         spin_operator: qt.Qobj = qt.Qobj()
-        for key in spin_op.keys():
-            coeff: complex = complex(spin_op.get(key))
+        for key in system.keys():
+            coeff: complex = complex(system.get(key))
             spin_operator += coeff * SpinQutipInterface.pauli_product_to_qutip(
                 key, number_spins, endianess=endianess
             )

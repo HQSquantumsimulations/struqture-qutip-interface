@@ -13,7 +13,7 @@
 """Qutip interface to spins."""
 import qutip as qt
 from struqture_py import spins
-from typing import Union, overload
+from typing import Union
 
 
 def _pauli_str_to_matrix(pauli_str: str) -> qt.Qobj:
@@ -132,9 +132,19 @@ class SpinQutipInterface(object):
                 ops[to_index(index)] = _decoherence_str_to_matrix(dp.get(index))
         return qt.tensor(ops)
 
-    @overload
     @staticmethod
-    def qobj(system: spins.SpinHamiltonianSystem, endianess: str = "little") -> qt.Qobj:
+    def qobj(system: Union[spins.SpinHamiltonianSystem,spins.SpinSystem],
+              endianess: str = "little") -> qt.Qobj:
+        r"""Returns a QuTiP representation of a spin system or a spin hamiltonian.
+
+        Args:
+            system: The spin based system
+            endianess: first qubit to the right (little) or left (big)
+
+        Returns:
+            qt.Qobj: The QuTiP representation of spin based system
+
+        """
         number_spins: int = system.number_spins()
         spin_operator: qt.Qobj = qt.Qobj()
         for key in system.keys():
@@ -144,26 +154,6 @@ class SpinQutipInterface(object):
             )
         return spin_operator
 
-    @staticmethod
-    def qobj(system: spins.SpinSystem, endianess: str = "little") -> qt.Qobj:
-        r"""Returns a QuTiP representation .
-
-        Args:
-            system: The spin based system
-            endianess: first qubit to the right (little) or left (big)
-
-        Returns:
-            qt.Qobj: The QuTiP representation
-
-        """
-        number_spins : int = system.number_spins()
-        spin_operator: qt.Qobj = qt.Qobj()
-        for key in system.keys():
-            coeff: complex = complex(system.get(key))
-            spin_operator += coeff * SpinQutipInterface.pauli_product_to_qutip(
-                key, number_spins, endianess=endianess
-            )
-        return spin_operator
 
 class SpinOpenSystemQutipInterface(object):
     """QuTiP interface for SpinLindbladOpenSystem objects."""

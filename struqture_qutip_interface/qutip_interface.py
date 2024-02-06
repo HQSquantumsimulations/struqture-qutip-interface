@@ -72,6 +72,7 @@ def _decoherence_str_to_matrix(decoh_str: str) -> qt.Qobj:
 
 class SpinQutipInterface(object):
     """QuTiP interface for SpinHamiltonianSystem objects."""
+
     @staticmethod
     def pauli_product_to_qutip(
         product: str, number_spins: int, endianess: str = "little"
@@ -133,8 +134,9 @@ class SpinQutipInterface(object):
         return qt.tensor(ops)
 
     @staticmethod
-    def qobj(system: Union[spins.SpinHamiltonianSystem,spins.SpinSystem],
-              endianess: str = "little") -> qt.Qobj:
+    def qobj(
+        system: Union[spins.SpinHamiltonianSystem, spins.SpinSystem], endianess: str = "little"
+    ) -> qt.Qobj:
         r"""Returns a QuTiP representation of a spin system or a spin hamiltonian.
 
         Args:

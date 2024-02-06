@@ -134,23 +134,23 @@ class SpinQutipInterface(object):
         return qt.tensor(ops)
 
     @staticmethod
-    def qobj(system: spins.SpinHamiltonianSystem, endianess: str = "little") -> qt.Qobj:
-        r"""Returns a QuTiP representation.
+    def qobj(
+        system: Union[spins.SpinHamiltonianSystem, spins.SpinSystem], endianess: str = "little"
+    ) -> qt.Qobj:
+        r"""Returns a QuTiP representation of a spin system or a spin hamiltonian.
 
         Args:
-            system: The spin system
+            system: The spin based system
             endianess: first qubit to the right (little) or left (big)
 
         Returns:
-            qt.Qobj: The QuTiP representation
+            qt.Qobj: The QuTiP representation of spin based system
 
         """
-        number_spins: int
-        number_spins = system.number_spins()
-        spin_operator = 0
-        coeff: complex
+        number_spins: int = system.number_spins()
+        spin_operator: qt.Qobj = qt.Qobj()
         for key in system.keys():
-            coeff = complex(system.get(key))
+            coeff: complex = complex(system.get(key))
             spin_operator += coeff * SpinQutipInterface.pauli_product_to_qutip(
                 key, number_spins, endianess=endianess
             )

@@ -16,6 +16,7 @@ from struqture_py.spins import (
     PauliProduct,
     SpinLindbladOpenSystem,
     SpinLindbladNoiseSystem,
+    SpinSystem
 )
 from struqture_qutip_interface import SpinQutipInterface, SpinOpenSystemQutipInterface
 from qoqo_calculator_pyo3 import CalculatorComplex
@@ -97,6 +98,31 @@ def test_qobj():
         sps.set(repr(pp), CalculatorComplex(i + 1))
     assert qi.qobj(sps) == qt.Qobj(exact, dims=[[2, 2], [2, 2]])
 
+def test_qobj2():
+    qi = SpinQutipInterface()
+    to_matrix = {0: qt.qeye(2), 1: qt.sigmax(), 2: qt.sigmay(), 3: qt.sigmaz()}
+    exact = np.sum(
+        [
+            (i + 1) * np.kron(to_matrix[i].data.toarray(), to_matrix[i].data.toarray())
+            for i in [0, 1, 2, 3]
+        ],
+        0,
+    )
+    sps = SpinSystem(2)
+    for i, action in enumerate(["I", "X", "Y", "Z"]):
+        pp = PauliProduct().set_pauli(0, action).set_pauli(1, action)
+        sps.set(repr(pp), CalculatorComplex(i + 1))
+    assert qi.qobj(sps) == qt.Qobj(exact, dims=[[2, 2], [2, 2]])
+
+def test_qobj_empty():
+    qi = SpinQutipInterface()
+    sps = SpinHamiltonianSystem()
+    assert qi.qobj(sps) == qt.Qobj()
+
+def test_qobj2_empty():
+    qi = SpinQutipInterface()
+    sps = SpinSystem()
+    assert qi.qobj(sps) == qt.Qobj()
 
 @pytest.mark.parametrize("endianess", ["little", "big"])
 def test_qobj_endianess(endianess):
@@ -113,6 +139,26 @@ def test_qobj_endianess(endianess):
             0,
         )
     sps = SpinHamiltonianSystem(2)
+    for i, action in enumerate(["I", "X", "Y", "Z"]):
+        pp = PauliProduct().set_pauli(0, action)
+        sps.set(repr(pp), CalculatorComplex(i + 1))
+    assert qi.qobj(sps, endianess=endianess) == qt.Qobj(exact, dims=[[2, 2], [2, 2]])
+
+@pytest.mark.parametrize("endianess", ["little", "big"])
+def test_qobj2_endianess(endianess):
+    qi = SpinQutipInterface()
+    to_matrix = {0: qt.qeye(2), 1: qt.sigmax(), 2: qt.sigmay(), 3: qt.sigmaz()}
+    if endianess == "little":
+        exact = np.sum(
+            [(i + 1) * np.kron(np.eye(2), to_matrix[i].data.toarray()) for i in [0, 1, 2, 3]],
+            0,
+        )
+    else:
+        exact = np.sum(
+            [(i + 1) * np.kron(to_matrix[i].data.toarray(), np.eye(2)) for i in [0, 1, 2, 3]],
+            0,
+        )
+    sps = SpinSystem(2)
     for i, action in enumerate(["I", "X", "Y", "Z"]):
         pp = PauliProduct().set_pauli(0, action)
         sps.set(repr(pp), CalculatorComplex(i + 1))

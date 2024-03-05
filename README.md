@@ -9,6 +9,7 @@ This project is in the alpha stage, documentation is minimal at the moment and b
 ```Python
 from struqture_qutip_interface import SpinQutipInterface, SpinOpenSystemQutipInterface
 import qutip as qt
+import numpy as np
 from struqture_py.spins import (
     SpinLindbladOpenSystem,
     SpinLindbladNoiseSystem,

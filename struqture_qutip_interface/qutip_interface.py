@@ -154,7 +154,7 @@ class SpinQutipInterface(object):
                 dims=[[2 for _ in range(number_spins)], [2 for _ in range(number_spins)]],
             )
         else:
-            spin_operator: qt.Qobj = qt.Qobj()
+            spin_operator = qt.Qobj()
         for key in system.keys():
             coeff: complex = complex(system.get(key))
             spin_operator += coeff * SpinQutipInterface.pauli_product_to_qutip(

@@ -16,7 +16,7 @@ from struqture_py.spins import (
     PauliProduct,
     SpinLindbladOpenSystem,
     SpinLindbladNoiseSystem,
-    SpinSystem
+    SpinSystem,
 )
 from struqture_qutip_interface import SpinQutipInterface, SpinOpenSystemQutipInterface
 from qoqo_calculator_pyo3 import CalculatorComplex
@@ -55,9 +55,9 @@ def test_pauli_product_to_qutip_2spin(action, qt_matrix, endianess):
     qi = SpinQutipInterface()
     op = PauliProduct().set_pauli(0, action)
     if endianess == "little":
-        exact = np.kron([[1, 0], [0, 1]], qt_matrix.data.toarray())
+        exact = np.kron([[1, 0], [0, 1]], qt_matrix.data.to_array())
     else:
-        exact = np.kron(qt_matrix.data.toarray(), [[1, 0], [0, 1]])
+        exact = np.kron(qt_matrix.data.to_array(), [[1, 0], [0, 1]])
     assert qi.pauli_product_to_qutip(op, 2, endianess=endianess) == qt.Qobj(
         exact, dims=[[2, 2], [2, 2]]
     )
@@ -76,7 +76,7 @@ testdata = [
 def test_pauli_product_to_qutip_2actions(action, qt_matrix, endianess):
     qi = SpinQutipInterface()
     op = PauliProduct().set_pauli(0, action).set_pauli(1, action)
-    exact = np.kron(qt_matrix.data.toarray(), qt_matrix.data.toarray())
+    exact = np.kron(qt_matrix.data.to_array(), qt_matrix.data.to_array())
     assert qi.pauli_product_to_qutip(op, 2, endianess=endianess) == qt.Qobj(
         exact, dims=[[2, 2], [2, 2]]
     )
@@ -87,7 +87,7 @@ def test_qobj():
     to_matrix = {0: qt.qeye(2), 1: qt.sigmax(), 2: qt.sigmay(), 3: qt.sigmaz()}
     exact = np.sum(
         [
-            (i + 1) * np.kron(to_matrix[i].data.toarray(), to_matrix[i].data.toarray())
+            (i + 1) * np.kron(to_matrix[i].data.to_array(), to_matrix[i].data.to_array())
             for i in [0, 1, 2, 3]
         ],
         0,
@@ -98,12 +98,13 @@ def test_qobj():
         sps.set(repr(pp), CalculatorComplex(i + 1))
     assert qi.qobj(sps) == qt.Qobj(exact, dims=[[2, 2], [2, 2]])
 
+
 def test_qobj2():
     qi = SpinQutipInterface()
     to_matrix = {0: qt.qeye(2), 1: qt.sigmax(), 2: qt.sigmay(), 3: qt.sigmaz()}
     exact = np.sum(
         [
-            (i + 1) * np.kron(to_matrix[i].data.toarray(), to_matrix[i].data.toarray())
+            (i + 1) * np.kron(to_matrix[i].data.to_array(), to_matrix[i].data.to_array())
             for i in [0, 1, 2, 3]
         ],
         0,
@@ -114,15 +115,30 @@ def test_qobj2():
         sps.set(repr(pp), CalculatorComplex(i + 1))
     assert qi.qobj(sps) == qt.Qobj(exact, dims=[[2, 2], [2, 2]])
 
+
 def test_qobj_empty():
     qi = SpinQutipInterface()
     sps = SpinHamiltonianSystem()
-    assert qi.qobj(sps) == qt.Qobj()
+    converted = qi.qobj(sps)
+    pure_qutip = qt.Qobj()
+    assert converted.dims == pure_qutip.dims
+    assert converted.data == pure_qutip.data
+    assert converted.type == pure_qutip.type
+    assert converted.shape == pure_qutip.shape
+    assert converted.isherm == pure_qutip.isherm
+
 
 def test_qobj2_empty():
     qi = SpinQutipInterface()
     sps = SpinSystem()
-    assert qi.qobj(sps) == qt.Qobj()
+    converted = qi.qobj(sps)
+    pure_qutip = qt.Qobj()
+    assert converted.dims == pure_qutip.dims
+    assert converted.data == pure_qutip.data
+    assert converted.type == pure_qutip.type
+    assert converted.shape == pure_qutip.shape
+    assert converted.isherm == pure_qutip.isherm
+
 
 @pytest.mark.parametrize("endianess", ["little", "big"])
 def test_qobj_endianess(endianess):
@@ -130,12 +146,12 @@ def test_qobj_endianess(endianess):
     to_matrix = {0: qt.qeye(2), 1: qt.sigmax(), 2: qt.sigmay(), 3: qt.sigmaz()}
     if endianess == "little":
         exact = np.sum(
-            [(i + 1) * np.kron(np.eye(2), to_matrix[i].data.toarray()) for i in [0, 1, 2, 3]],
+            [(i + 1) * np.kron(np.eye(2), to_matrix[i].data.to_array()) for i in [0, 1, 2, 3]],
             0,
         )
     else:
         exact = np.sum(
-            [(i + 1) * np.kron(to_matrix[i].data.toarray(), np.eye(2)) for i in [0, 1, 2, 3]],
+            [(i + 1) * np.kron(to_matrix[i].data.to_array(), np.eye(2)) for i in [0, 1, 2, 3]],
             0,
         )
     sps = SpinHamiltonianSystem(2)
@@ -144,18 +160,19 @@ def test_qobj_endianess(endianess):
         sps.set(repr(pp), CalculatorComplex(i + 1))
     assert qi.qobj(sps, endianess=endianess) == qt.Qobj(exact, dims=[[2, 2], [2, 2]])
 
+
 @pytest.mark.parametrize("endianess", ["little", "big"])
 def test_qobj2_endianess(endianess):
     qi = SpinQutipInterface()
     to_matrix = {0: qt.qeye(2), 1: qt.sigmax(), 2: qt.sigmay(), 3: qt.sigmaz()}
     if endianess == "little":
         exact = np.sum(
-            [(i + 1) * np.kron(np.eye(2), to_matrix[i].data.toarray()) for i in [0, 1, 2, 3]],
+            [(i + 1) * np.kron(np.eye(2), to_matrix[i].data.to_array()) for i in [0, 1, 2, 3]],
             0,
         )
     else:
         exact = np.sum(
-            [(i + 1) * np.kron(to_matrix[i].data.toarray(), np.eye(2)) for i in [0, 1, 2, 3]],
+            [(i + 1) * np.kron(to_matrix[i].data.to_array(), np.eye(2)) for i in [0, 1, 2, 3]],
             0,
         )
     sps = SpinSystem(2)

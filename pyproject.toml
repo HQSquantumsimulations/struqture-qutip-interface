@@ -1,6 +1,6 @@
 [project]
 name = "struqture_qutip_interface"
-version = "0.1.2"
+version = "0.2.0"
 license = {file="LICENSE"}
 authors = [
     {name="HQS Quantum Simulation GmbH", email="info@quantumsimulations.de"}
@@ -11,8 +11,8 @@ maintainers = [
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "qutip>=4,<5",
-    "struqture_py>=1.5",
+    "qutip>=5,<6",
+    "struqture_py>=1.9",
     "numpy",
 ]
 

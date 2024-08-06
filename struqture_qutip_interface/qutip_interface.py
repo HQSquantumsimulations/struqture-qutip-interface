@@ -148,12 +148,19 @@ class SpinQutipInterface(object):
 
         """
         number_spins: int = system.number_spins()
-        spin_operator: qt.Qobj = qt.Qobj()
+        if number_spins != 0:
+            spin_operator: qt.Qobj = qt.Qobj(
+                [[0.0] * 2**number_spins] * 2**number_spins,
+                dims=[[2 for _ in range(number_spins)], [2 for _ in range(number_spins)]],
+            )
+        else:
+            spin_operator = qt.Qobj()
         for key in system.keys():
             coeff: complex = complex(system.get(key))
             spin_operator += coeff * SpinQutipInterface.pauli_product_to_qutip(
                 key, number_spins, endianess=endianess
             )
+
         return spin_operator
 
 

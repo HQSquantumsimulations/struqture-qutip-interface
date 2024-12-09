@@ -6,7 +6,6 @@ on:
     types: [created]
 
 jobs:
-
   publish_documentation:
     runs-on: ubuntu-latest
     steps:

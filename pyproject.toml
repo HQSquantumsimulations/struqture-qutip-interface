@@ -9,7 +9,7 @@ maintainers = [
     {name="Kirsten Bark", email="kirsten.bark@quantumsimulations.de"}
 ]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "qutip>=5,<6",
     "struqture_py>=2.0.0a4",

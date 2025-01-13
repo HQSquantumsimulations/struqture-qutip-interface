@@ -71,7 +71,7 @@ def _decoherence_str_to_matrix(decoh_str: str) -> qt.Qobj:
 
 
 class SpinQutipInterface(object):
-    """QuTiP interface for SpinHamiltonianSystem objects."""
+    """QuTiP interface for QubitHamiltonian objects."""
 
     @staticmethod
     def pauli_product_to_qutip(
@@ -135,19 +135,22 @@ class SpinQutipInterface(object):
 
     @staticmethod
     def qobj(
-        system: Union[spins.SpinHamiltonianSystem, spins.SpinSystem], endianess: str = "little"
+        system: Union[spins.QubitHamiltonian, spins.QubitOperator],
+        endianess: str = "little",
+        number_spins: int = None,
     ) -> qt.Qobj:
         r"""Returns a QuTiP representation of a spin system or a spin hamiltonian.
 
         Args:
             system: The spin based system
             endianess: first qubit to the right (little) or left (big)
+            number_spins: optional number of spins in the system
 
         Returns:
             qt.Qobj: The QuTiP representation of spin based system
 
         """
-        number_spins: int = system.number_spins()
+        number_spins: int = system.current_number_spins() if number_spins is None else number_spins
         if number_spins != 0:
             spin_operator: qt.Qobj = qt.Qobj(
                 [[0.0] * 2**number_spins] * 2**number_spins,
@@ -165,14 +168,15 @@ class SpinQutipInterface(object):
 
 
 class SpinOpenSystemQutipInterface(object):
-    """QuTiP interface for SpinLindbladOpenSystem objects."""
+    """QuTiP interface for QubitLindbladOpenSystem objects."""
 
     @staticmethod
     def open_system_to_qutip(
-        open_system: Union[spins.SpinLindbladOpenSystem, spins.SpinLindbladNoiseSystem],
+        open_system: Union[spins.QubitLindbladOpenSystem, spins.QubitLindbladNoiseOperator],
         endianess: str = "little",
+        number_spins: int = None,
     ) -> qt.Qobj:
-        r"""Returns QuTiP representation of an SpinLindbladOpenSystem.
+        r"""Returns QuTiP representation of an QubitLindbladOpenSystem.
 
         This function can also be used to convert mu matrices from the NoiseModel.
         The inputs are then:
@@ -180,8 +184,9 @@ class SpinOpenSystemQutipInterface(object):
                                 Dict = NoiseModel(circuit, calc).mu_matrix]
 
         Args:
-            open_system: the LindbladOpenSystem considered (here, a SpinLindbladOpenSystem)
+            open_system: the LindbladOpenSystem considered (here, a QubitLindbladOpenSystem)
             endianess: first qubit to the right (little) or left (big)
+            number_spins: optional number of spins in the system
 
         Returns:
             Qobj: The QuTiP representation
@@ -227,9 +232,15 @@ class SpinOpenSystemQutipInterface(object):
         try:
             system = open_system.system()
             noise = open_system.noise()
-            number_qubits = max(system.number_spins(), noise.number_spins())
+            number_qubits = (
+                max(system.current_number_spins(), noise.current_number_spins())
+                if number_spins is None
+                else number_spins
+            )
         except AttributeError:
-            number_qubits = open_system.number_spins()
+            number_qubits = (
+                open_system.current_number_spins() if number_spins is None else number_spins
+            )
             system = {}
             noise = open_system
 

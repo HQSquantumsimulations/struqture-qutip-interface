@@ -13,7 +13,7 @@
 """Qutip interface to spins."""
 
 import qutip as qt
-from struqture_py import spins # type: ignore
+from struqture_py import spins  # type: ignore
 from typing import Union
 
 

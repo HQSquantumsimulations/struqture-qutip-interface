@@ -11,7 +11,7 @@
 # limitations under the License.
 
 """Test SpinHamiltonianSystem and SpinSystem"""
-from struqture_py.spins import ( # type: ignore
+from struqture_py.spins import (  # type: ignore
     SpinHamiltonianSystem,
     PauliProduct,
     SpinLindbladOpenSystem,
@@ -22,7 +22,7 @@ from struqture_qutip_interface import SpinQutipInterface, SpinOpenSystemQutipInt
 from qoqo_calculator_pyo3 import CalculatorComplex
 import qutip as qt
 import numpy as np
-import pytest # type: ignore
+import pytest  # type: ignore
 import sys
 
 

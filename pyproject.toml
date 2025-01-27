@@ -10,7 +10,7 @@ maintainers = [
 ]
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = ["qutip>=5,<6", "struqture_py>=1.9", "numpy"]
+dependencies = ["qutip>=5,<6", "struqture_py>=1.10", "numpy"]
 
 [project.optional-dependencies]
 tests = ['pytest-cov', 'pytest']
@@ -140,4 +140,4 @@ follow_imports = "silent"
 
 [tool.black]
 line-length = 99
-target-version = ['py39', 'py310', 'py311']
+target-version = ['py39', 'py310', 'py311', 'py312', 'py313']

@@ -10,13 +10,13 @@
 # express or implied. See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Test SpinHamiltonianSystem and SpinSystem"""
-from struqture_py.spins import (  # type: ignore
-    SpinHamiltonianSystem,
+"""Test QubitHamiltonian and QubitOperator"""
+from struqture_py.spins import (
+    QubitHamiltonian,
     PauliProduct,
-    SpinLindbladOpenSystem,
-    SpinLindbladNoiseSystem,
-    SpinSystem,
+    QubitLindbladOpenSystem,
+    QubitLindbladNoiseOperator,
+    QubitOperator,
 )
 from struqture_qutip_interface import SpinQutipInterface, SpinOpenSystemQutipInterface
 from qoqo_calculator_pyo3 import CalculatorComplex
@@ -92,7 +92,7 @@ def test_qobj():
         ],
         0,
     )
-    sps = SpinHamiltonianSystem(2)
+    sps = QubitHamiltonian()
     for i, action in enumerate(["I", "X", "Y", "Z"]):
         pp = PauliProduct().set_pauli(0, action).set_pauli(1, action)
         sps.set(repr(pp), CalculatorComplex(i + 1))
@@ -109,7 +109,7 @@ def test_qobj2():
         ],
         0,
     )
-    sps = SpinSystem(2)
+    sps = QubitOperator()
     for i, action in enumerate(["I", "X", "Y", "Z"]):
         pp = PauliProduct().set_pauli(0, action).set_pauli(1, action)
         sps.set(repr(pp), CalculatorComplex(i + 1))
@@ -118,7 +118,7 @@ def test_qobj2():
 
 def test_qobj_empty():
     qi = SpinQutipInterface()
-    sps = SpinHamiltonianSystem()
+    sps = QubitHamiltonian()
     converted = qi.qobj(sps)
     pure_qutip = qt.Qobj()
     assert converted.dims == pure_qutip.dims
@@ -130,7 +130,7 @@ def test_qobj_empty():
 
 def test_qobj2_empty():
     qi = SpinQutipInterface()
-    sps = SpinSystem()
+    sps = QubitOperator()
     converted = qi.qobj(sps)
     pure_qutip = qt.Qobj()
     assert converted.dims == pure_qutip.dims
@@ -154,11 +154,13 @@ def test_qobj_endianess(endianess):
             [(i + 1) * np.kron(to_matrix[i].data.to_array(), np.eye(2)) for i in [0, 1, 2, 3]],
             0,
         )
-    sps = SpinHamiltonianSystem(2)
+    sps = QubitHamiltonian()
     for i, action in enumerate(["I", "X", "Y", "Z"]):
         pp = PauliProduct().set_pauli(0, action)
         sps.set(repr(pp), CalculatorComplex(i + 1))
-    assert qi.qobj(sps, endianess=endianess) == qt.Qobj(exact, dims=[[2, 2], [2, 2]])
+    assert qi.qobj(sps, endianess=endianess, number_spins=2) == qt.Qobj(
+        exact, dims=[[2, 2], [2, 2]]
+    )
 
 
 @pytest.mark.parametrize("endianess", ["little", "big"])
@@ -175,38 +177,40 @@ def test_qobj2_endianess(endianess):
             [(i + 1) * np.kron(to_matrix[i].data.to_array(), np.eye(2)) for i in [0, 1, 2, 3]],
             0,
         )
-    sps = SpinSystem(2)
+    sps = QubitOperator()
     for i, action in enumerate(["I", "X", "Y", "Z"]):
         pp = PauliProduct().set_pauli(0, action)
         sps.set(repr(pp), CalculatorComplex(i + 1))
-    assert qi.qobj(sps, endianess=endianess) == qt.Qobj(exact, dims=[[2, 2], [2, 2]])
+    assert qi.qobj(sps, endianess=endianess, number_spins=2) == qt.Qobj(
+        exact, dims=[[2, 2], [2, 2]]
+    )
 
 
 @pytest.mark.parametrize("endianess", ["little", "big"])
 def test_open_system_interface_open_system(endianess):
     qi = SpinOpenSystemQutipInterface()
 
-    hamiltonian = SpinHamiltonianSystem()
+    hamiltonian = QubitHamiltonian()
     hamiltonian.add_operator_product("0X", CalculatorComplex(2))
     hamiltonian.add_operator_product("0Z", CalculatorComplex(4))
-    noise = SpinLindbladNoiseSystem()
+    noise = QubitLindbladNoiseOperator()
     noise.set(("0Z", "1iY"), 3.0)
-    open_system = SpinLindbladOpenSystem.group(hamiltonian, noise)
+    open_system = QubitLindbladOpenSystem.group(hamiltonian, noise)
     qt_system_2 = qi.open_system_to_qutip(open_system=open_system, endianess=endianess)
 
-    hamiltonian = SpinHamiltonianSystem()
+    hamiltonian = QubitHamiltonian()
     hamiltonian.add_operator_product("0X", CalculatorComplex(2))
     hamiltonian.add_operator_product("0Z", CalculatorComplex(4))
-    noise = SpinLindbladNoiseSystem()
-    open_system = SpinLindbladOpenSystem.group(hamiltonian, noise)
+    noise = QubitLindbladNoiseOperator()
+    open_system = QubitLindbladOpenSystem.group(hamiltonian, noise)
     qt_system_3 = qi.open_system_to_qutip(open_system=open_system, endianess=endianess)
-    hamiltonian = SpinHamiltonianSystem()
-    noise = SpinLindbladNoiseSystem()
+    hamiltonian = QubitHamiltonian()
+    noise = QubitLindbladNoiseOperator()
     noise.set(("0Z", "1iY"), 3.0)
-    open_system = SpinLindbladOpenSystem.group(hamiltonian, noise)
+    open_system = QubitLindbladOpenSystem.group(hamiltonian, noise)
     qt_system_4 = qi.open_system_to_qutip(open_system=open_system, endianess=endianess)
 
-    open_system = SpinLindbladOpenSystem()
+    open_system = QubitLindbladOpenSystem()
     qt_system_5 = qi.open_system_to_qutip(open_system=open_system, endianess=endianess)
 
     if endianess == "little":
@@ -242,11 +246,11 @@ def test_open_system_interface_open_system(endianess):
 def test_open_system_interface_noise_operator(endianess):
     qi = SpinOpenSystemQutipInterface()
 
-    open_system = SpinLindbladNoiseSystem()
+    open_system = QubitLindbladNoiseOperator()
     open_system.set(("0Z", "1iY"), 3.0)
     qt_system_4 = qi.open_system_to_qutip(open_system=open_system, endianess=endianess)
 
-    open_system = SpinLindbladNoiseSystem()
+    open_system = QubitLindbladNoiseOperator()
     qt_system_5 = qi.open_system_to_qutip(open_system=open_system, endianess=endianess)
 
     if endianess == "little":

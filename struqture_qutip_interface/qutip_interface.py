@@ -151,7 +151,9 @@ class SpinQutipInterface(object):
             qt.Qobj: The QuTiP representation of spin based system
 
         """
-        number_qubits: int = system.current_number_spins() if number_spins is None else number_spins
+        number_qubits: int = (
+            system.current_number_spins() if number_spins is None else number_spins
+        )
         if number_qubits != 0:
             spin_operator: qt.Qobj = qt.Qobj(
                 [[0.0] * 2**number_qubits] * 2**number_qubits,

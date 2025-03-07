@@ -151,18 +151,18 @@ class SpinQutipInterface(object):
             qt.Qobj: The QuTiP representation of spin based system
 
         """
-        number_spins: int = system.current_number_spins() if number_spins is None else number_spins
-        if number_spins != 0:
+        number_qubits: int = system.current_number_spins() if number_spins is None else number_spins
+        if number_qubits != 0:
             spin_operator: qt.Qobj = qt.Qobj(
-                [[0.0] * 2**number_spins] * 2**number_spins,
-                dims=[[2 for _ in range(number_spins)], [2 for _ in range(number_spins)]],
+                [[0.0] * 2**number_qubits] * 2**number_qubits,
+                dims=[[2 for _ in range(number_qubits)], [2 for _ in range(number_qubits)]],
             )
         else:
             spin_operator = qt.Qobj()
         for key in system.keys():
             coeff: complex = complex(system.get(key))
             spin_operator += coeff * SpinQutipInterface.pauli_product_to_qutip(
-                key, number_spins, endianess=endianess
+                key, number_qubits, endianess=endianess
             )
 
         return spin_operator

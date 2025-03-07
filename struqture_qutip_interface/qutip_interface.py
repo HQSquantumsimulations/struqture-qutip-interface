@@ -14,7 +14,7 @@
 
 import qutip as qt
 from struqture_py import spins  # type: ignore
-from typing import Union
+from typing import Union, Optional
 
 
 def _pauli_str_to_matrix(pauli_str: str) -> qt.Qobj:
@@ -138,7 +138,7 @@ class SpinQutipInterface(object):
     def qobj(
         system: Union[spins.PauliHamiltonian, spins.PauliOperator],
         endianess: str = "little",
-        number_spins: int = None,
+        number_spins: Optional[int] = None,
     ) -> qt.Qobj:
         r"""Returns a QuTiP representation of a spin system or a spin hamiltonian.
 
@@ -175,7 +175,7 @@ class SpinOpenSystemQutipInterface(object):
     def open_system_to_qutip(
         open_system: Union[spins.PauliLindbladOpenSystem, spins.PauliLindbladNoiseOperator],
         endianess: str = "little",
-        number_spins: int = None,
+        number_spins: Optional[int] = None,
     ) -> qt.Qobj:
         r"""Returns QuTiP representation of an PauliLindbladOpenSystem.
 

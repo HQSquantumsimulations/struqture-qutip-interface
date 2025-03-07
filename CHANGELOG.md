@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0
+
+* Switched to struqture 2.0 (struqture 2.0.0-alpha.11).
+**NOTE**: struqture-qutip-interface now **outputs struqture 2.0 objects**.
+
 ## 0.2.0
 
 ### Updated in 0.2.0

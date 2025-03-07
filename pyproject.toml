@@ -1,6 +1,6 @@
 [project]
 name = "struqture_qutip_interface"
-version = "0.2.0"
+version = "0.3.0"
 license = { file = "LICENSE" }
 authors = [
     { name = "HQS Quantum Simulation GmbH", email = "info@quantumsimulations.de" },

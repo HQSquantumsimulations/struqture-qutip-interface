@@ -11,16 +11,16 @@ from struqture_qutip_interface import SpinQutipInterface, SpinOpenSystemQutipInt
 import qutip as qt
 import numpy as np
 from struqture_py.spins import (
-    SpinLindbladOpenSystem,
-    SpinLindbladNoiseSystem,
-    SpinHamiltonianSystem,
+    PauliLindbladOpenSystem,
+    PauliLindbladNoiseOperator,
+    PauliHamiltonian,
     PauliProduct,
     DecoherenceProduct
 )
 
 number_spins = 2
 # Creating a Spin Hamiltonian in struqture
-hamiltonian = SpinHamiltonianSystem(number_spins)
+hamiltonian = PauliHamiltonian()
 for i in range(number_spins):
     hamiltonian.set(PauliProduct().z(i), 1.0)
 
@@ -28,13 +28,13 @@ for i in range(number_spins-1):
     hamiltonian.set(PauliProduct().x(i).x(i+1), 0.5)
 
 # Creating noise terms in struqture
-noise = SpinLindbladNoiseSystem(number_spins)
+noise = PauliLindbladNoiseOperator()
 
 for i in range(number_spins):
     noise.set((DecoherenceProduct().z(i), DecoherenceProduct().z(i)), 0.001)
 
 # Combining noise terms and Hamiltonian to an open system
-noisy_system = SpinLindbladOpenSystem.group(hamiltonian, noise)
+noisy_system = PauliLindbladOpenSystem.group(hamiltonian, noise)
 
 # Transforming the open system to a qutip superoperator
 (coherent_part, noisy_part) = SpinOpenSystemQutipInterface.open_system_to_qutip(noisy_system)

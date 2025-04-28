@@ -12,7 +12,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     "qutip>=5,<6",
-    "struqture_py>=2.0.0a11",
+    "struqture_py>=2.0",
     "numpy",
 ]
 

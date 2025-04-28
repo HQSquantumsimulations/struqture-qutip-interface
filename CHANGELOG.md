@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+* Updated to struqture 2.0.0.
+
 ## 0.3.0
 
 * Switched to struqture 2.0 (struqture 2.0.0-alpha.11).

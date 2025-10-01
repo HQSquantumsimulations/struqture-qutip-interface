@@ -35,7 +35,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.ruff]
 line-length = 99        # same as black
-target-version = "py39"
+target-version = "py310"
 show-fixes = true
 output-format = "full"
 # activate the following checks
@@ -144,4 +144,4 @@ follow_imports = "silent"
 
 [tool.black]
 line-length = 99
-target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
+target-version = ['py310', 'py311', 'py312', 'py313']

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+* Updated minimum supported Python version from 3.9 to 3.10.
+
 ## 0.4.0
 
 * Updated to struqture 2.0.0.
